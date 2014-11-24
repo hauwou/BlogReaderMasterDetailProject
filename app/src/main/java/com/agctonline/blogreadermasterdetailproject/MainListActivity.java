@@ -3,14 +3,17 @@ package com.agctonline.blogreadermasterdetailproject;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -104,6 +107,34 @@ public class MainListActivity extends ListActivity {
         }
         else {
             Toast.makeText(this, "Network is not available", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        //This method is called when the item in the listview is tapped.  This method is not manually invoked by code.This method takes 4 params. 1st is the ListView, 2nd is the view of each item in the list, 3rd is the index of the item, 4th is the id of the item to be displayed in the detail screen
+        super.onListItemClick(l, v, position, id);
+
+        try {
+            JSONArray jsonPosts = mBlogData.getJSONArray("posts");
+            JSONObject jsonPost = jsonPosts.getJSONObject(position);
+            //Notice that jsonPost(singular) is the JSONObject type and
+            //jsonPosts is the JSONArray data type
+            String blogURL = jsonPost.getString("url");
+
+            //Intent intent = new Intent(Intent.ACTION_VIEW); //implicit intent declaration, let the app picks another type of app to handle this intent. In this case, the android system will pick the browser app to open the link.
+            Intent intent = new Intent(this, BlogWebViewActivity.class); //Explicit intent declaration, let the app picks another type of app to handle this intent. In this case, the android system will pick the browser app to open the link. Intent statement can be considered as --> start at "this" activity and go to the activity.class in the second parameter.
+
+            intent.setData(Uri.parse(blogURL));//parse url and set intent data, which is the URL
+            startActivity(intent);
+
+
+
+
+
+        } catch (JSONException e) {
+            Log.e(TAG, "JSON exception caught inside onListItemClick");
         }
 
     }
@@ -225,12 +256,12 @@ public class MainListActivity extends ListActivity {
                 for (int i =0; i<jsonPosts.length();i++){
                     JSONObject post = jsonPosts.getJSONObject(i);
                     String title = post.getString(KEY_TITLE);
-                    title = Html.fromHtml(title).toString();
+                    title = Html.fromHtml(title).toString(); // this is to escape special characters
 
                     //mBlogPostTitles[i] = title;
 
                     String author = post.getString(KEY_AUTHOR);
-                    title = Html.fromHtml(author).toString();
+                    author = Html.fromHtml(author).toString();
 
                     HashMap<String, String> blogPost = new HashMap<String, String>();
                     blogPost.put(KEY_TITLE,title);
