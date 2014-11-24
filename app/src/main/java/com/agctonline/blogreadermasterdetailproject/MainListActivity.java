@@ -245,10 +245,9 @@ public class MainListActivity extends ListActivity {
                 int[] ids ={android.R.id.text1,android.R.id.text2};
                 //the 2 arrays above are created so they can be used as the last 2 params in the SimpleAdapter
                 SimpleAdapter adapter = new SimpleAdapter(this,blogPosts,android.R.layout.simple_list_item_2,keys,ids);
-                //
-
 
                 setListAdapter(adapter);
+                //set/execute the data in the adapter to output onscreen
 
                 Log.d(TAG, mBlogData.toString(2));
             } catch (JSONException e) {
